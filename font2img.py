@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
-from __future__ import absolute_import
+
+
 
 import argparse
 import sys
@@ -11,9 +11,10 @@ from PIL import ImageDraw
 from PIL import ImageFont
 import json
 import collections
+import importlib
 
-reload(sys)
-sys.setdefaultencoding("utf-8")
+importlib.reload(sys)
+#sys.setdefaultencoding("utf-8")
 
 CN_CHARSET = None
 CN_T_CHARSET = None
@@ -26,10 +27,8 @@ DEFAULT_CHARSET = "./charset/cjk.json"
 def load_global_charset():
     global CN_CHARSET, JP_CHARSET, KR_CHARSET, CN_T_CHARSET
     cjk = json.load(open(DEFAULT_CHARSET))
-    CN_CHARSET = cjk["gbk"]
-    JP_CHARSET = cjk["jp"]
     KR_CHARSET = cjk["kr"]
-    CN_T_CHARSET = cjk["gb2312_t"]
+
 
 
 def draw_single_char(ch, font, canvas_size, x_offset, y_offset):
@@ -63,7 +62,7 @@ def filter_recurring_hash(charset, font, canvas_size, x_offset, y_offset):
     for c in sample:
         img = draw_single_char(c, font, canvas_size, x_offset, y_offset)
         hash_count[hash(img.tobytes())] += 1
-    recurring_hashes = filter(lambda d: d[1] > 2, hash_count.items())
+    recurring_hashes = [d for d in list(hash_count.items()) if d[1] > 2]
     return [rh[0] for rh in recurring_hashes]
 
 
